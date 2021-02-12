@@ -1,5 +1,5 @@
 
-FROM registry.redhat.io/ubi8/ubi
+FROM registry.access.redhat.com/ubi8/ubi
 
 # add Shibboleth RPM repository
 COPY shibboleth.repo /etc/yum.repos.d/
@@ -14,9 +14,9 @@ RUN yum install -y shibboleth && \
 
 # Replace some config files with symlinks.
 # Mount configMaps and secrets in /shib-config at Pod startup.
-RUN ln -fs /etc/shibboleth/shibboleth2.xml /shib-config/shibboleth2.xml && \
-    ln -fs /etc/attribute-map.xml          /shib-config/attribute-map.xml
-COPY sign-login.helsinki.fi.crt shibboleth2.xml /etc/shibboleth/
+RUN ln -fs /shib-config/shibboleth2.xml /etc/shibboleth/shibboleth2.xml && \
+    ln -fs /shib-config/attribute-map.xml /etc/attribute-map.xml
+COPY sign-login.helsinki.fi.crt /etc/shibboleth/
 
 # This is just for best practices. Ignored by Openshift.
 USER shibd
