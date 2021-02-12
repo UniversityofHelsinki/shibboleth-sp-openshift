@@ -23,4 +23,4 @@ USER shibd
 
 EXPOSE 1600
 
-CMD /start.sh
+CMD /usr/sbin/shibd
