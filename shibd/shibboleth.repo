@@ -1,0 +1,6 @@
+[Shibboleth]
+baseurl = http://download.opensuse.org/repositories/security://shibboleth/CentOS_8/
+gpgcheck = 1
+gpgkey = http://download.opensuse.org/repositories/security:/shibboleth/CentOS_8//repodata/repomd.xml.key
+name = Shibboleth (Centos 8)
+
