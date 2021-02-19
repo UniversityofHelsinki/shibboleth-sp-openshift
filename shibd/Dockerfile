@@ -10,7 +10,8 @@ COPY shibboleth.repo /etc/yum.repos.d/
 #    which is a member of the group root. By doing this chgrp we make sure the process
 #    can access all the files it needs.
 RUN yum install -y shibboleth && \
-    rpm -ql shibboleth | xargs chgrp root
+    rpm -ql shibboleth | xargs chgrp root && \
+	chmod g+w /var/log/shibboleth
 
 # Replace some config files with symlinks.
 # Mount configMaps and secrets in /shib-config at Pod startup.
@@ -23,4 +24,4 @@ USER shibd
 
 EXPOSE 1600
 
-CMD /usr/sbin/shibd
+CMD /usr/sbin/shibd -F
