@@ -6,8 +6,8 @@ RUN yum install -y shibboleth
 
 # Replace some config files with symlinks.
 # Mount configMaps and secrets in /shib-config at Pod startup.
-RUN ln -fs /etc/shibboleth/shibboleth2.xml /shib-config/shibboleth2.xml && \
-    ln -fs /etc/attribute-map.xml          /shib-config/attribute-map.xml
+RUN ln -fs /shib-config/shibboleth2.xml /etc/shibboleth/ && \
+    ln -fs /shib-config/attribute-map.xml /etc/shibboleth/attribute-map.xml
 
 # Mount your httpd configuration as a configMap in ${HTTPD_CONFIGURATION_PATH}
 
