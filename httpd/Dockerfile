@@ -9,7 +9,14 @@ RUN yum install -y shibboleth
 RUN ln -fs /shib-config/shibboleth2.xml /etc/shibboleth/ && \
     ln -fs /shib-config/attribute-map.xml /etc/shibboleth/attribute-map.xml
 
-# Mount your httpd configuration as a configMap in ${HTTPD_CONFIGURATION_PATH}
+# 1) Delete default /secure path from shib.conf
+# 2) Create empty index.html in document root
+# 3) Include configuration files from ${HTTPD_CONFIGURATION_PATH}
+RUN sed -i '/<Location \/secure>/,/<\/Location>/d' /etc/httpd/conf.d/shib.conf && \
+    touch /var/www/html/index.html && \
+    echo "IncludeOptional ${HTTPD_CONFIGURATION_PATH}/*.conf" > /etc/httpd/conf.d/include_custom.conf
+
+# Mount your httpd configuration as a configMap in ${HTTPD_CONFIGURATION_PATH} (/opt/app-root/etc/httpd.d)
 
 USER 1001
 
