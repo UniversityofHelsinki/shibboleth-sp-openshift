@@ -22,4 +22,4 @@ RUN sed -i '/<Location \/secure>/,/<\/Location>/d' /etc/httpd/conf.d/shib.conf &
 
 USER 1001
 
-CMD ln -sf -t /etc/shibboleth/ /shib-config/*; run-httpd
+CMD ln -sf -t /etc/shibboleth/ /shib-config/*; /usr/sbin/apachectl -t -D DUMP_INCLUDES; run-httpd
