@@ -1,5 +1,6 @@
-
 FROM registry.access.redhat.com/ubi8/ubi
+
+LABEL maintainer="ronja.koistinen@helsinki.fi"
 
 # add Shibboleth RPM repository
 COPY shibboleth.repo /etc/yum.repos.d/

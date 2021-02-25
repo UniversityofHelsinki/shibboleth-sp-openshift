@@ -1,5 +1,7 @@
 FROM registry.redhat.io/rhel8/httpd-24
 
+LABEL maintainer="ronja.koistinen@helsinki.fi"
+
 USER 0
 ADD shibboleth.repo /etc/yum.repos.d/
 RUN yum install -y shibboleth
