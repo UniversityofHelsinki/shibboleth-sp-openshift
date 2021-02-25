@@ -4,12 +4,12 @@ LABEL maintainer="ronja.koistinen@helsinki.fi"
 
 USER 0
 ADD shibboleth.repo /etc/yum.repos.d/
-RUN yum install -y shibboleth
-
-# Replace some config files with symlinks.
-# Mount configMaps and secrets in /shib-config at Pod startup.
-RUN ln -fs /shib-config/shibboleth2.xml /etc/shibboleth/ && \
-    ln -fs /shib-config/attribute-map.xml /etc/shibboleth/attribute-map.xml
+# 1) Install Shibboleth
+# 2) Change the group of /etc/shibboleth to root
+# 3) Give the group write permissions to /etc/shibboleth
+RUN yum install -y shibboleth && \
+    chgrp root /etc/shibboleth && \
+	chmod g+w /etc/shibboleth
 
 # 1) Delete default /secure path from shib.conf
 # 2) Create empty index.html in document root
@@ -22,8 +22,4 @@ RUN sed -i '/<Location \/secure>/,/<\/Location>/d' /etc/httpd/conf.d/shib.conf &
 
 USER 1001
 
-# Let the assemble script install the dependencies
-# RUN /usr/libexec/s2i/assemble
-
-# The run script uses standard ways to run the application
-# CMD /usr/libexec/s2i/run
+CMD ln -sf -t /etc/shibboleth/ /shib-config/*; run-httpd
