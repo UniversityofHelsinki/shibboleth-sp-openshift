@@ -9,7 +9,7 @@ ADD shibboleth.repo /etc/yum.repos.d/
 # 3) Give the group write permissions to /etc/shibboleth
 RUN yum install -y shibboleth && \
     chgrp root /etc/shibboleth && \
-	chmod g+w /etc/shibboleth
+    chmod g+w /etc/shibboleth
 
 # 1) Delete default /secure path from shib.conf
 # 2) Create empty index.html in document root
