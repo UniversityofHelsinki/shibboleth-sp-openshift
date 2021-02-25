@@ -13,7 +13,7 @@ COPY shibboleth.repo /etc/yum.repos.d/
 # 3) Give the root group write permissions to directories which shibd needs to write in
 RUN yum install -y shibboleth && \
     rpm -ql shibboleth | xargs chgrp root && \
-	chmod g+w /var/log/shibboleth /etc/shibboleth /etc/shibboleth/metadata
+	chmod g+w /var/log/shibboleth /etc/shibboleth
 
 COPY sign-login.helsinki.fi.crt /etc/shibboleth/
 
