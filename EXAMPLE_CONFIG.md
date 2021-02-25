@@ -139,8 +139,14 @@ data:
     ProxyPass "/Shibboleth.sso" !
     ProxyPass "/shibboleth-sp" !
 
-    ProxyPass / https://my-backend-address
-    ProxyPassReverse / https://my-backend-address
+    # If your backend is accessible at a URL on the public Internet or the university's
+    # network, 'my-backend-address' takes the form of something like https://example.com/my-thing.
+    #
+    # If your backend is another Service in your Openshift project,
+    # 'my-backend-address' will be something like http://name-of-backend-service:8080,
+    # depending on the configuration of that Service.
+    ProxyPass / my-backend-address
+    ProxyPassReverse / my-backend-address
 ```
 
 ## DeploymentConfig
