@@ -22,7 +22,7 @@ RUN yum install -y shibboleth && \
 COPY sign-login.helsinki.fi.crt /etc/shibboleth/
 COPY --chown=shibd:root start.sh /usr/local/bin/start.sh
 
-RUN chmod u+x /usr/local/bin/start.sh
+RUN chmod g+x /usr/local/bin/start.sh
 
 # This is just for best practices. Ignored by Openshift.
 USER shibd
