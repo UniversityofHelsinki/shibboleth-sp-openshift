@@ -1,6 +1,7 @@
 FROM registry.redhat.io/rhel8/httpd-24
 
 LABEL maintainer="ronja.koistinen@helsinki.fi"
+LABEL ImageName=openshift-sp-httpd
 
 USER 0
 ADD shibboleth.repo /etc/yum.repos.d/

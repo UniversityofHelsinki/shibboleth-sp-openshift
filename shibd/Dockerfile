@@ -1,6 +1,7 @@
 FROM registry.access.redhat.com/ubi8/ubi
 
 LABEL maintainer="ronja.koistinen@helsinki.fi"
+LABEL ImageName=openshift-sp-shibd
 
 # add Shibboleth RPM repository
 COPY shibboleth.repo /etc/yum.repos.d/
