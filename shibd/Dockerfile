@@ -20,6 +20,7 @@ RUN yum install -y shibboleth nmap-ncat && \
     chmod g+w /var/log/shibboleth /etc/shibboleth
 
 COPY sign-login.helsinki.fi.crt /etc/shibboleth/
+COPY modified_templates/*.html /etc/shibboleth/
 COPY --chown=shibd:root start.sh /usr/local/bin/start.sh
 
 RUN chmod g+x /usr/local/bin/start.sh
