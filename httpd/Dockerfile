@@ -26,4 +26,5 @@ USER 1001
 HEALTHCHECK --interval=1m --timeout=30s \
     CMD curl -f http://localhost:8080/Shibboleth.sso/Status || exit 1
 
+COPY modified_templates/*.html /etc/shibboleth/
 CMD ln -sf -t /etc/shibboleth/ /shib-config/*; /usr/sbin/apachectl -t -D DUMP_INCLUDES; run-httpd
