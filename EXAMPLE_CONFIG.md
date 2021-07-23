@@ -112,7 +112,7 @@ metadata:
   labels:
     app: my-app
 data:
-  motproxy.conf: |
+  myapp.conf: |
     # Apache is listening on :8080 but is actually hosted behind an HTTPS
     # reverse proxy provided by the Openshift Route. In order to produce correct
     # HTTPS self-referential URLs, we need to convince Apache to use this
