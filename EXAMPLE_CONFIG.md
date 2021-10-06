@@ -247,6 +247,13 @@ A Route exposes your app for network traffic from outside the Openshift cluster.
 The Openshift clusters at the University of Helsinki are currently configured with two
 Ingress Controllers: `apps` for traffic within the university's network, and `ext` for the public Internet.
 
+You can also use a custom name for the `spec.host` value,
+but then you must provide your own certificate and key in the Route.
+See above for documentation.
+
+Setting up a custom hostname for your OpenShift project is outside the scope of this document.
+See [here](https://wiki.helsinki.fi/pages/viewpage.action?pageId=364188115) in Finnish.
+
 ```Yaml
 kind: Route
 apiVersion: route.openshift.io/v1
@@ -265,5 +272,6 @@ spec:
     targetPort: 8080-tcp
   tls:
     termination: edge
+    insecureEdgeTerminationPolicy: Redirect
   wildcardPolicy: None
 ```
