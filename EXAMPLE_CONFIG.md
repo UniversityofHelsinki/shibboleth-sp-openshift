@@ -151,10 +151,10 @@ data:
 
 ## DeploymentConfig
 
-[Documentation on DeploymentConfigs.](https://docs.openshift.com/container-platform/4.6/rest_api/workloads_apis/deploymentconfig-apps-openshift-io-v1.html)
+[Documentation on Deployments.](https://docs.openshift.com/container-platform/4.7/rest_api/workloads_apis/deployment-apps-v1.html)
 
 ```Yaml
-kind: DeploymentConfig
+kind: Deployment
 apiVersion: apps.openshift.io/v1
 metadata:
   name: my-app
@@ -162,15 +162,14 @@ metadata:
   labels:
     app: my-app
 spec:
-  strategy:
-    type: Rolling
-  triggers:
-    - type: ConfigChange
+  replicas: 1
+  selector:
+    matchLabels:
+      app: my-app
   template:
     metadata:
       labels:
         app: my-app
-        deploymentconfig: my-app
     spec:
       volumes:
         - name: shib-secrets
@@ -195,6 +194,7 @@ spec:
             - name: shib-config
               mountPath: /shib-config
               readOnly: true
+          imagePullPolicy: Always
         - name: httpd
           ports:
             - containerPort: 8080
@@ -210,6 +210,7 @@ spec:
             - name: httpd-config
               mountPath: /opt/app-root/etc/httpd.d
               readOnly: true
+          imagePullPolicy: Always
       restartPolicy: Always
 ```
 
@@ -235,7 +236,6 @@ spec:
       targetPort: 8080
   selector:
     app: my-app
-    deploymentconfig: my-app
 ```
 
 ## Route
