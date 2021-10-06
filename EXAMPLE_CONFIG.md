@@ -154,6 +154,9 @@ data:
 
 [Documentation on Deployments.](https://docs.openshift.com/container-platform/4.7/rest_api/workloads_apis/deployment-apps-v1.html)
 
+The section `spec.template.spec.affinity` is strictly optional.
+The `podAntiAffinity` stanza as demonstrated attempts to schedule the replica pods on separate cluster nodes to maximise fault tolerance.
+
 ```Yaml
 kind: Deployment
 apiVersion: apps.openshift.io/v1
@@ -163,7 +166,7 @@ metadata:
   labels:
     app: my-app
 spec:
-  replicas: 1
+  replicas: 2 # Set desired pod count here. Load balancing is automatically handled by the Service.
   selector:
     matchLabels:
       app: my-app
@@ -172,6 +175,18 @@ spec:
       labels:
         app: my-app
     spec:
+      affinity: # optional!
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              podAffinityTerm:
+                labelSelector:
+                  matchExpressions:
+                    - key: app
+                      operator: In
+                      values:
+                        - my-app
+                topologyKey: kubernetes.io/hostname
       volumes:
         - name: shib-secrets
           secret:
