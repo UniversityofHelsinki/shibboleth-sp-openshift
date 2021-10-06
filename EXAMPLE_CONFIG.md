@@ -1,7 +1,6 @@
 # Example configuration
 
 These are example objects for running this service in an Openshift project.
-Make sure to apply these objects in this order, as they form a dependency chain.
 
 ## Secrets
 
