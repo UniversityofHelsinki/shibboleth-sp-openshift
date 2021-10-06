@@ -5,7 +5,9 @@ These are example objects for running this service in an Openshift project.
 ## Secrets
 
 **Make sure you do not include these in your version control,
-or if you do, protect them with something like Ansible Vault!**
+or if you do,
+protect them with something like Ansible Vault or [Helm secrets](https://github.com/jkroepke/helm-secrets)
+([see also](https://wiki.helsinki.fi/display/SO/Helm+ja+salaisuuksienhallinta))!**
 
 [Documentation on Secrets.](https://kubernetes.io/docs/concepts/configuration/secret/)
 
@@ -148,7 +150,7 @@ data:
     ProxyPassReverse / my-backend-address
 ```
 
-## DeploymentConfig
+## Deployment
 
 [Documentation on Deployments.](https://docs.openshift.com/container-platform/4.7/rest_api/workloads_apis/deployment-apps-v1.html)
 
