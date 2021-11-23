@@ -44,17 +44,11 @@ The Apache web server comes with various `mod_proxy_*` modules,
 some of which implement a protocol which supports passing environment variables.
 You may have some success passing user attributes using one of these.
 
-The container image `quay.io/tike/shibboleth-sp-httpd` comes with these:
+The container image `quay.io/tike/shibboleth-sp-httpd` comes with these relevant modules:
 
 * mod_proxy.so
 * mod_proxy_ajp.so
-* mod_proxy_balancer.so
-* mod_proxy_connect.so
-* mod_proxy_express.so
 * mod_proxy_fcgi.so
-* mod_proxy_fdpass.so
-* mod_proxy_ftp.so
-* mod_proxy_hcheck.so
 * mod_proxy_http.so
 * mod_proxy_http2.so
 * mod_proxy_scgi.so
