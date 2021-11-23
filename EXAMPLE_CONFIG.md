@@ -2,11 +2,14 @@
 
 These are example objects for running this service in an Openshift project.
 
-**NOTE:**
-This minimal example config omits handling any user attributes.
+## User attributes
+
+**This minimal example config deliberately omits handling any user attributes.**
 Attributes are a bit of a complicated subject with many possible approaches.
+
 *A very viable approach for a containerised environment is to actually not use Shibboleth at all.*
-If you need any use attributes (you probably do),
+
+**If you need any user attributes (you probably do)**,
 please read the [USING ATTRIBUTES](USING_ATTRIBUTES.md) document before doing anything else.
 
 ## Secrets
