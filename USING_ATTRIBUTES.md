@@ -80,3 +80,10 @@ to pass Shibboleth-authenticated traffic to your backend:
 ```
 ProxyPass /securepath uwsgi://mybackend:myport/
 ```
+
+## Further reading
+
+Some links in no particular order:
+
+* https://shibboleth.atlassian.net/wiki/spaces/SP3/pages/2065335311/AddAttribute
+* https://shibboleth.atlassian.net/wiki/spaces/SP3/pages/2065335257/AttributeAccess
