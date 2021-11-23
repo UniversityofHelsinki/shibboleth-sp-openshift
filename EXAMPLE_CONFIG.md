@@ -2,6 +2,13 @@
 
 These are example objects for running this service in an Openshift project.
 
+**NOTE:**
+This minimal example config omits handling any user attributes.
+Attributes are a bit of a complicated subject with many possible approaches.
+*A very viable approach for a containerised environment is to actually not use Shibboleth at all.*
+If you need any use attributes (you probably do),
+please read the [USING ATTRIBUTES](USING_ATTRIBUTES.md) document before doing anything else.
+
 ## Secrets
 
 **Make sure you do not include these in your version control,
@@ -133,7 +140,6 @@ data:
         AuthType shibboleth
         ShibRequestSetting requireSession 1
         Require valid-user
-        # Put any required user attributes here
     </Location>
 
     # Don't proxy these paths used by Shibboleth to the backend
