@@ -1,11 +1,25 @@
 # Using Attributes In Your Application
 
+1. In the [SP registry](https://sp-registry.it.helsinki.fi/),
+select which attributes your application needs from the IdP.
+
+2. Select one of the myriad ways your application can
+receive attributes from the IdP.
+(One very valid option is to stop reading this document and learn how to
+do OpenID Connect in your programming language.)
+
+3. If you still want to use a Shibboleth proxy,
+create an `attribute-map.xml` file with the attributes configured in the SP registry.
+
+Now on to the hairy stuff:
 ## Environment variables don't transfer to other containers
 
 Shibboleth is designed to pass the user attributes retrieved from the IdP
-by setting them in `HTTP_` prefixed environment variables.
+by setting them in environment variables.
 In traditional web server setups, the `httpd` server process launches a CGI script or uses
 something like `mod_php` to run the application being served.
+
+**This does not transfer well into a containerised microservice architecture.**
 
 If httpd + mod_shib is acting as a reverse proxy,
 there isn't a straight-forward way for the application backend to know about
@@ -34,7 +48,7 @@ as well as your options.
 
 Then either:
 
-* Use a **SAML**, **OpenID Connect** or **LDAP** library in your programming language of choice to implement
+* Use a **SAML** or **OpenID Connect** library in your programming language of choice to implement
   your authentication directly in your application, or
 * Talk to your backend using a protocol which supports passing environment variables with proxied requests. See below.
 
@@ -59,9 +73,9 @@ The container image `quay.io/tike/shibboleth-sp-httpd` comes with these relevant
 
 The [`mod_proxy_ajp` module](https://httpd.apache.org/docs/2.4/mod/mod_proxy_ajp.html) (*Apache JServ Protocol*)
 can be used to pass environment variables.
-Specify `SetEnv AJP_FOO "bar"` in your httpd config.
 All environment variables prefixed `AJP_` are passed to the backend,
 with the prefix automatically removed.
+Adding the `AJP_` prefix to your variable names is left as an exercise to the reader.
 
 ### FastCGI
 
