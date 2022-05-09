@@ -226,9 +226,6 @@ spec:
               protocol: TCP
           image: quay.io/tike/openshift-sp-httpd:latest
           volumeMounts:
-            - name: shib-secrets
-              mountPath: /shib-secrets
-              readOnly: true
             - name: shib-config
               mountPath: /shib-config
               readOnly: true
