@@ -21,6 +21,8 @@ RUN sed -i '/<Location \/secure>/,/<\/Location>/d' /etc/httpd/conf.d/shib.conf &
 
 # Mount your httpd configuration as a configMap in ${HTTPD_CONFIGURATION_PATH} (/opt/app-root/etc/httpd.d)
 
+RUN dnf update -y
+
 USER 1001
 
 HEALTHCHECK --interval=1m --timeout=30s \

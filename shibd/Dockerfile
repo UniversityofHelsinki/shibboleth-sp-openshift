@@ -25,6 +25,8 @@ COPY --chown=shibd:root start.sh /usr/local/bin/start.sh
 
 RUN chmod g+x /usr/local/bin/start.sh
 
+RUN dnf upgrade -y
+
 # This is just for best practices. Ignored by Openshift.
 USER shibd
 
