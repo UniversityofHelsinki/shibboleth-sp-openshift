@@ -1,6 +1,6 @@
 FROM registry.access.redhat.com/ubi8/ubi
 
-LABEL maintainer="ronja.koistinen@helsinki.fi"
+LABEL maintainer="atk-verkkopalvelut@helsinki.fi"
 LABEL ImageName=openshift-sp-shibd
 
 # add Shibboleth RPM repository

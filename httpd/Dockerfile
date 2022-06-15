@@ -1,6 +1,6 @@
 FROM registry.redhat.io/rhel8/httpd-24
 
-LABEL maintainer="ronja.koistinen@helsinki.fi"
+LABEL maintainer="atk-verkkopalvelut@helsinki.fi"
 LABEL ImageName=openshift-sp-httpd
 
 USER 0
