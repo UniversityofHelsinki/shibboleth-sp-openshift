@@ -14,7 +14,7 @@ Shibboleth may not be the optimal solution for you.
 
 Ready to use container images are available to pull at:
 
-* `quay.io/tike/shibboleth-sp-shibd`
-* `quay.io/tike/shibboleth-sp-httpd`
+* `quay.io/tike/openshift-sp-shibd`
+* `quay.io/tike/openshift-sp-httpd`
 
 For an example Openshift configuration, see [EXAMPLE_CONFIG.md](EXAMPLE_CONFIG.md).
