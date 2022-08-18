@@ -8,9 +8,16 @@ ADD shibboleth.repo /etc/yum.repos.d/
 # 1) Install Shibboleth
 # 2) Change the group of /etc/shibboleth to root
 # 3) Give the group write permissions to /etc/shibboleth
+# 4) Delete some generated and not-to-be-used files in order to appease image scanners
+#    (and maybe force-prevent some misconfiguration problems too...)
 RUN yum install -y shibboleth && \
     chgrp root /etc/shibboleth && \
-    chmod g+w /etc/shibboleth
+    chmod g+w /etc/shibboleth && \
+    rm \
+        /etc/shibboleth/sp-signing-cert.pem \
+        /etc/shibboleth/sp-signing-key.pem \
+        /etc/shibboleth/sp-encrypt-cert.pem \
+        /etc/shibboleth/sp-encrypt-key.pem
 
 # 1) Delete default /secure path from shib.conf
 # 2) Create empty index.html in document root

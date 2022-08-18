@@ -14,10 +14,17 @@ COPY shibboleth.repo /etc/yum.repos.d/
 #    which is a member of the group root. By doing this chgrp we make sure the process
 #    can access all the files it needs.
 # 4) Give the root group write permissions to directories which shibd needs to write in
+# 5) Delete some generated and not-to-be-used files in order to appease image scanners
+#    (and maybe force-prevent some misconfiguration problems too...)
 RUN yum install -y shibboleth nmap-ncat && \
     usermod -a -G root shibd && \
     rpm -ql shibboleth | xargs chgrp root && \
-    chmod g+w /var/log/shibboleth /etc/shibboleth
+    chmod g+w /var/log/shibboleth /etc/shibboleth && \
+    rm \
+        /etc/shibboleth/sp-signing-cert.pem \
+        /etc/shibboleth/sp-signing-key.pem \
+        /etc/shibboleth/sp-encrypt-cert.pem \
+        /etc/shibboleth/sp-encrypt-key.pem
 
 COPY sign-login.helsinki.fi.crt /etc/shibboleth/
 COPY modified_templates/*.html /etc/shibboleth/
