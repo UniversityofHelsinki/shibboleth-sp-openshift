@@ -6,4 +6,4 @@ then
     exit 1
 fi
 
-podman build -t quay.io/tike/openshift-sp-shibd:$1 .
+podman build --no-cache -t quay.io/tike/openshift-sp-shibd:$1 .
