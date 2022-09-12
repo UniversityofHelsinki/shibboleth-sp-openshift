@@ -30,6 +30,8 @@ RUN sed -i '/<Location \/secure>/,/<\/Location>/d' /etc/httpd/conf.d/shib.conf &
 
 RUN dnf update -y
 
+RUN /usr/libexec/httpd-prepare && rpm-file-permissions
+
 USER 1001
 
 HEALTHCHECK --interval=1m --timeout=30s \
