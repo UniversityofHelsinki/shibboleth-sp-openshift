@@ -31,6 +31,8 @@ RUN sed -i '/<Location \/secure>/,/<\/Location>/d' /etc/httpd/conf.d/shib.conf &
 RUN dnf update -y
 
 RUN /usr/libexec/httpd-prepare && rpm-file-permissions
+RUN chgrp -R 0 /opt/app-root/src && \
+    chmod -R g=u /opt/app-root/src
 
 USER 1001
 
