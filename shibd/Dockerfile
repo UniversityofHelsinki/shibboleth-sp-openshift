@@ -1,4 +1,4 @@
-FROM registry.access.redhat.com/ubi8/ubi
+FROM registry.access.redhat.com/ubi9/ubi
 
 LABEL maintainer="atk-verkkopalvelut@helsinki.fi"
 LABEL ImageName=openshift-sp-shibd

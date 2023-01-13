@@ -1,43 +1,51 @@
-FROM registry.redhat.io/rhel8/httpd-24
+FROM quay.io/tike/ubi9-httpd:test
 
 LABEL maintainer="atk-verkkopalvelut@helsinki.fi"
 LABEL ImageName=openshift-sp-httpd
 
 USER 0
+
 ADD shibboleth.repo /etc/yum.repos.d/
 # 1) Install Shibboleth
 # 2) Change the group of /etc/shibboleth to root
 # 3) Give the group write permissions to /etc/shibboleth
-# 4) Delete some generated and not-to-be-used files in order to appease image scanners
-#    (and maybe force-prevent some misconfiguration problems too...)
-RUN yum install -y shibboleth && \
-    chgrp root /etc/shibboleth && \
+# 4) Delete some generated and not-to-be-used files in order to appease image
+#  scanners (and maybe force-prevent some misconfiguration problems too...)
+
+RUN microdnf clean all && \
+    microdnf install -y --disableplugin=subscription-manager \
+        shibboleth 
+RUN chgrp root /etc/shibboleth && \
     chmod g+w /etc/shibboleth && \
-    rm \
+    rm -f \
         /etc/shibboleth/sp-signing-cert.pem \
         /etc/shibboleth/sp-signing-key.pem \
         /etc/shibboleth/sp-encrypt-cert.pem \
         /etc/shibboleth/sp-encrypt-key.pem
 
+# Finally, make sure everything is up-to-date
+RUN microdnf upgrade -y --disableplugin=subscription-manager && \
+    microdnf --disableplugin=subscription-manager clean all
+
 # 1) Delete default /secure path from shib.conf
 # 2) Create empty index.html in document root
-# 3) Include configuration files from ${HTTPD_CONFIGURATION_PATH}
+# 3) Include configuration files from /opt/app-root/etc/httpd.d
+#     -- this path is a bit vestigial but it's been given in example config 
+#        and has now become essentially part of our usage contract 
+#        so changing it would be hard...
 RUN sed -i '/<Location \/secure>/,/<\/Location>/d' /etc/httpd/conf.d/shib.conf && \
-    touch /var/www/html/index.html && \
-    echo "IncludeOptional ${HTTPD_CONFIGURATION_PATH}/*.conf" > /etc/httpd/conf.d/include_custom.conf
+    truncate -s 0 /var/www/html/index.html && \
+    echo "IncludeOptional /opt/app-root/etc/httpd.d/*.conf" > \
+         /etc/httpd/conf.d/include_custom.conf
 
-# Mount your httpd configuration as a configMap in ${HTTPD_CONFIGURATION_PATH} (/opt/app-root/etc/httpd.d)
+ADD cmd.sh /opt/src/cmd.sh
 
-RUN dnf update -y
-
-RUN /usr/libexec/httpd-prepare && rpm-file-permissions
-RUN chgrp -R 0 /opt/app-root/src && \
-    chmod -R g=u /opt/app-root/src
+RUN chgrp -R 0 /opt/src && \
+    chmod -R g=u /opt/src && \
+    chmod +x /opt/src/cmd.sh
 
 USER 1001
 
-HEALTHCHECK --interval=1m --timeout=30s \
-    CMD curl -f http://localhost:8080/Shibboleth.sso/Status || exit 1
-
 COPY modified_templates/*.html /etc/shibboleth/
-CMD ln -sf -t /etc/shibboleth/ /shib-config/*; /usr/sbin/apachectl -t -D DUMP_INCLUDES; run-httpd
+
+ENTRYPOINT ["/opt/src/cmd.sh"]
