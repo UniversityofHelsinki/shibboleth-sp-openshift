@@ -6,16 +6,16 @@ LABEL ImageName=openshift-sp-httpd
 USER 0
 
 ADD shibboleth.repo /etc/yum.repos.d/
+
 # 1) Install Shibboleth
 # 2) Change the group of /etc/shibboleth to root
 # 3) Give the group write permissions to /etc/shibboleth
 # 4) Delete some generated and not-to-be-used files in order to appease image
 #  scanners (and maybe force-prevent some misconfiguration problems too...)
-
 RUN microdnf clean all && \
     microdnf install -y --disableplugin=subscription-manager \
-        shibboleth 
-RUN chgrp root /etc/shibboleth && \
+        shibboleth && \
+    chgrp root /etc/shibboleth && \
     chmod g+w /etc/shibboleth && \
     rm -f \
         /etc/shibboleth/sp-signing-cert.pem \
