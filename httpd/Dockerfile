@@ -12,8 +12,12 @@ ADD shibboleth.repo /etc/yum.repos.d/
 # 3) Give the group write permissions to /etc/shibboleth
 # 4) Delete some generated and not-to-be-used files in order to appease image
 #  scanners (and maybe force-prevent some misconfiguration problems too...)
-RUN microdnf clean all && \
-    microdnf install -y --disableplugin=subscription-manager \
+RUN microdnf \
+        clean all && \
+    microdnf \
+            --disableplugin=subscription-manager --disablerepo="*" \
+            --enablerepo="ubi-9-appstream-rpms" --enablerepo="ubi-9-baseos-rpms" --enablerepo="shibboleth" \
+        install -y \
         shibboleth && \
     chgrp root /etc/shibboleth && \
     chmod g+w /etc/shibboleth && \
@@ -24,8 +28,12 @@ RUN microdnf clean all && \
         /etc/shibboleth/sp-encrypt-key.pem
 
 # Finally, make sure everything is up-to-date
-RUN microdnf upgrade -y --disableplugin=subscription-manager && \
-    microdnf --disableplugin=subscription-manager clean all
+RUN microdnf \
+            --disableplugin=subscription-manager --disablerepo="*" \
+            --enablerepo="ubi-9-appstream-rpms" --enablerepo="ubi-9-baseos-rpms" --enablerepo="shibboleth" \
+        upgrade -y && \
+    microdnf \
+        clean all
 
 # 1) Delete default /secure path from shib.conf
 # 2) Create empty index.html in document root

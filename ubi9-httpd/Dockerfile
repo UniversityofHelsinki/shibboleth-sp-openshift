@@ -3,11 +3,20 @@ FROM registry.access.redhat.com/ubi9/ubi-minimal
 LABEL maintainer="atk-verkkopalvelut@helsinki.fi"
 LABEL ImageName=ubi9-httpd
 
-RUN microdnf --disableplugin=subscription-manager install -y \
+RUN microdnf \
+            --disableplugin=subscription-manager --disablerepo="*" \
+            --enablerepo="ubi-9-appstream-rpms" --enablerepo="ubi-9-baseos-rpms" \
+        install -y \
         gettext hostname nss_wrapper bind-utils httpd mod_ssl \
-        mod_ldap mod_session mod_security mod_auth_mellon sscg && \
-    microdnf --disableplugin=subscription-manager upgrade -y && \
-    microdnf --disableplugin=subscription-manager clean all
+        mod_ldap mod_session mod_security mod_auth_mellon sscg \
+    && \
+    microdnf \
+            --disableplugin=subscription-manager --disablerepo="*" \
+            --enablerepo="ubi-9-appstream-rpms" --enablerepo="ubi-9-baseos-rpms" \
+        upgrade -y \
+    && \
+    microdnf \
+        clean all
 
 # Change the user and group ID of the 'apache' user to a non-privileged ID
 RUN usermod -u 1001 apache && \
