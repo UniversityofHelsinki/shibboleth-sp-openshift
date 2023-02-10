@@ -18,3 +18,4 @@ Ready to use container images are available to pull at:
 * `quay.io/tike/openshift-sp-httpd`
 
 For an example Openshift configuration, see [EXAMPLE_CONFIG.md](EXAMPLE_CONFIG.md).
+
