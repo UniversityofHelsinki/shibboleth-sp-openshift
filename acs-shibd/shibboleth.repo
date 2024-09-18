@@ -1,9 +1,0 @@
-[shibboleth]
-name=Shibboleth (rockylinux9)
-type=rpm-md
-baseurl=https://paket.it.helsinki.fi/local-repo-mirrors/shibboleth/rockylinux9
-mirrorlist=https://shibboleth.net/cgi-bin/mirrorlist.cgi/rockylinux9
-gpgcheck=1
-gpgkey=https://shibboleth.net/downloads/service-provider/RPMS/repomd.xml.key
-        https://shibboleth.net/downloads/service-provider/RPMS/cantor.repomd.xml.key
-enabled=1
