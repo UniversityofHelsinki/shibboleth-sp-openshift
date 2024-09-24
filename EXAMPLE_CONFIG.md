@@ -16,8 +16,9 @@ please read the [USING ATTRIBUTES](USING_ATTRIBUTES.md) document before doing an
 
 **Make sure you do not include these in your version control,
 or if you do,
-protect them with something like Ansible Vault or [Helm secrets](https://github.com/jkroepke/helm-secrets)
-([see also](https://wiki.helsinki.fi/display/SO/Helm+ja+salaisuuksienhallinta))!**
+protect them with something like Ansible Vault or [SealedSecrets](https://devops.pages.helsinki.fi/guides/tike-container-platform/instructions/secrets.html#sealedsecrets)**
+
+The Openshift Container Platforms used by TIKE have SealedSecrets installed. It is the preferable solution until we get actual Secrets Management platform.
 
 [Documentation on Secrets.](https://kubernetes.io/docs/concepts/configuration/secret/)
 
@@ -274,7 +275,7 @@ but then you must provide your own certificate and key in the Route.
 See above for documentation.
 
 Setting up a custom hostname for your OpenShift project is outside the scope of this document.
-See [here](https://wiki.helsinki.fi/pages/viewpage.action?pageId=364188115) in Finnish.
+See [here](https://devops.pages.helsinki.fi/guides/tike-container-platform/instructions/how-to-publish.html).
 
 ```Yaml
 kind: Route

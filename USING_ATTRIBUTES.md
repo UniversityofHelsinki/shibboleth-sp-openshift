@@ -35,14 +35,14 @@ but it is not fool proof and has had vulnerabilities in the past.
 Don't use headers if you can avoid it.
 But if you do,
 don't use the `ShibUseHeaders` directive.
-Read [this page in the wiki](https://wiki.helsinki.fi/display/IAMasioita/Apache+httpd+ja+mod_shibilla+suojaus).
+Read [this page in the wiki](https://wiki.helsinki.fi/xwiki/bin/view/IAMasioita/Identiteetin-%20ja%20p%C3%A4%C3%A4synhallinnan%20dokumentaatio/Keskitetyn%20k%C3%A4ytt%C3%A4j%C3%A4tunnistuksen%20vaihtoehdot/1.%20Shibboleth%20%28SAML2%20%20OIDC%29/Ohjeet%20Shibbolointiin/Apache%20httpd%20ja%20mod_shibilla%20suojaus/).
 Basically, you should configure your httpd to overwrite specific browser-supplied headers
 with values from environment variables set by `mod_shib`.
 
 ## If not headers, then what?
 
 First,
-[read the university's documentation on implementing single sign-on](https://wiki.helsinki.fi/pages/viewpage.action?pageId=197657102)
+[read the university's documentation on implementing single sign-on](https://wiki.helsinki.fi/xwiki/bin/view/IAMasioita/Identiteetin-%20ja%20p%C3%A4%C3%A4synhallinnan%20dokumentaatio/Keskitetyn%20k%C3%A4ytt%C3%A4j%C3%A4tunnistuksen%20vaihtoehdot/)
 to gain an accurate overview of the university's offerings and restrictions
 as well as your options.
 
