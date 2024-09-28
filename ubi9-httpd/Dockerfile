@@ -7,7 +7,7 @@ RUN microdnf \
             --disableplugin=subscription-manager --disablerepo="*" \
             --enablerepo="ubi-9-appstream-rpms" --enablerepo="ubi-9-baseos-rpms" \
         install -y \
-        gettext hostname nss_wrapper bind-utils httpd mod_ssl \
+        gettext hostname nss_wrapper-libs bind-utils httpd mod_ssl \
         mod_ldap mod_session mod_security mod_auth_mellon sscg \
     && \
     microdnf \
