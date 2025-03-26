@@ -72,7 +72,8 @@ data:
                             cipherSuites="DEFAULT:!EXP:!LOW:!aNULL:!eNULL:!DES:!IDEA:!SEED:!RC4:!3DES:!kRSA:!SSLv2:!SSLv3:!TLSv1:!TLSv1.1">
 
             <Sessions lifetime="28800" timeout="3600" relayState="ss:mem"
-                      checkAddress="false" handlerSSL="false" cookieProps="http">
+                      checkAddress="false" handlerSSL="true" cookieProps="; path=/; secure;HttpOnly"
+                      redirectLimit="exact">
 
                 <SSO entityID="https://login.helsinki.fi/shibboleth">SAML2</SSO>
 
