@@ -114,6 +114,19 @@ data:
     </SPConfig>
 ```
 
+#### protocols.xml hardening present in image
+
+The default installation of shibd comes with great many protocols allowed in the `/etc/shibboleth/protocol.xml`, 
+most of which are usually not needed in the default usage in University of Helsinki. So, this image is built 
+with a more restricted version in order to limit the exposed attack surface. 
+You can see the restricted version in this repo at `shibd/base_shibboleth_configs/protocols.xml`. 
+
+If you need more protocols and services in there, you can edit the above configmap with 
+entry `protocols.xml` in the data part and it will override the restricted protocols.xml present in the image. 
+
+Please strive to not need doing that, and if you must do that, you need to be aware of and take full responsibility
+of the security implications yourself.
+
 ### httpd
 
 ```Yaml

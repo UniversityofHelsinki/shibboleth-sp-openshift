@@ -32,6 +32,7 @@ RUN microdnf \
 
 COPY sign-login.helsinki.fi.crt /etc/shibboleth/
 COPY modified_templates/*.html /etc/shibboleth/
+COPY base_shibboleth_configs/* /etc/shibboleth/
 COPY --chown=shibd:root start.sh /usr/local/bin/start.sh
 
 RUN chmod g+x /usr/local/bin/start.sh
