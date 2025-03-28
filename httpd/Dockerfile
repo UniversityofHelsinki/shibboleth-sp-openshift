@@ -55,5 +55,6 @@ RUN chgrp -R 0 /opt/src && \
 USER 1001
 
 COPY modified_templates/*.html /etc/shibboleth/
+COPY files/protocols.xml /etc/shibboleth/protocols.xml
 
 ENTRYPOINT ["/opt/src/cmd.sh"]

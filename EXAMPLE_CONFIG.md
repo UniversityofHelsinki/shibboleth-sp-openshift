@@ -123,9 +123,11 @@ You can see the restricted version in this repo at `shibd/base_shibboleth_config
 
 If you need more protocols and services in there, you can edit the above configmap with 
 entry `protocols.xml` in the data part and it will override the restricted protocols.xml present in the image. 
+NOTE: This change will, if you mount the volumes as shown at the end of this deployment, reflect on the 
+httpd container as well.  
 
-Please strive to not need doing that, and if you must do that, you need to be aware of and take full responsibility
-of the security implications yourself.
+Please make sure you don't make this change without reason, and understand that you need 
+to be aware of and take full responsibility of the security implications yourself.
 
 ### httpd
 
@@ -226,7 +228,7 @@ spec:
           ports:
             - containerPort: 1600
               protocol: TCP
-          image: quay.io/tike/openshift-sp-shibd:latest
+          image: quay.io/tike/openshift-sp-shibd:test # change to :prod to have marginally more testing
           volumeMounts:
             - name: shib-secrets
               mountPath: /shib-secrets
@@ -239,7 +241,7 @@ spec:
           ports:
             - containerPort: 8080
               protocol: TCP
-          image: quay.io/tike/openshift-sp-httpd:latest
+          image: quay.io/tike/openshift-sp-httpd:test # change to :prod to have marginally more testing
           volumeMounts:
             - name: shib-config
               mountPath: /shib-config
