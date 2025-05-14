@@ -1,6 +1,6 @@
 FROM quay.io/tike/ubi9-httpd:test
 
-LABEL maintainer="atk-verkkopalvelut@helsinki.fi"
+LABEL maintainer="grp-openshift-admin@helsinki.fi"
 LABEL ImageName=openshift-sp-httpd
 
 USER 0
