@@ -19,7 +19,7 @@ COPY shibboleth.repo /etc/yum.repos.d/
 RUN microdnf \
             --disableplugin=subscription-manager --disablerepo="*" \
             --enablerepo="ubi-9-appstream-rpms" --enablerepo="ubi-9-baseos-rpms"  --enablerepo="shibboleth" \
-        install -y shibboleth nmap-ncat && \
+        install -y shibboleth nmap-ncat findutils && \
     microdnf clean all && \
     usermod -a -G root shibd && \
     rpm -ql shibboleth | xargs chgrp root && \
