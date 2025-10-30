@@ -56,5 +56,6 @@ USER 1001
 
 COPY modified_templates/*.html /etc/shibboleth/
 COPY files/protocols.xml /etc/shibboleth/protocols.xml
+COPY files/set_forwarded_remote_ip.conf /etc/httpd/conf.d/set_forwarded_remote_ip.conf
 
 ENTRYPOINT ["/opt/src/cmd.sh"]
