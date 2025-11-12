@@ -320,7 +320,7 @@ spec:
 
 ### Do I need to care?
 
-Due to the way ingress traffic is handled in University of Helsinki's container platform, 
+Due to the way ingress traffic is handled in the container platform at University of Helsinki, 
 the httpd container does _things_ to set up the remote ip address to correctly correspond 
 to the actual client outside the cluster. 
 (see: [httpd/files/set_forwarded_remote_ip.conf](httpd/files/set_forwarded_remote_ip.conf)) 
@@ -359,7 +359,7 @@ spec:
 ...
 ```
 
-And this means that any pod that includes the label `disable-allow-same-namespace=` (no key-value, just the string as the key) will be excluded from allowing inbound connections from other pods in your project. Do note though, if you then want more fine-grained control of a subset of your otherwise isolated pods to be able to talk to each other, you need to write your own NetworkPolicies to do that. Note, disabling incoming traffic to a pod does not prevent the pod itself connecting to other pods. This is fortunate as it allows the Apache ProxyPass directive to work even if the backend service is outside the pod.
+And this means that any pod that includes the label `disable-allow-same-namespace=` (no key-value, just the string as the key) will be excluded from allowing inbound connections from other pods in your project. Do note though, if you then want more fine-grained control of a subset of your otherwise isolated pods to be able to talk to each other, you need to write your own NetworkPolicies to do that. Note, disabling incoming traffic to a pod does not prevent the pod itself connecting to other pods. This is fortunate as it allows the Apache ProxyPass directive to work even if the backend service is in another pod (as it probably is).
 
 Documentation: 
 * [Network Policies at kubernetes docs](https://kubernetes.io/docs/concepts/services-networking/network-policies/)
