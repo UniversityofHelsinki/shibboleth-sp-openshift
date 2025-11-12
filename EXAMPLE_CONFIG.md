@@ -178,7 +178,7 @@ data:
 
 ## Deployment
 
-[Documentation on Deployments.](https://docs.openshift.com/container-platform/4.7/rest_api/workloads_apis/deployment-apps-v1.html)
+[Documentation on Deployments.](https://kubernetes.io/docs/concepts/workloads/controllers/deployment/)
 
 The section `spec.template.spec.affinity` is strictly optional.
 The `podAntiAffinity` stanza as demonstrated attempts to schedule the replica pods on separate cluster nodes to maximise fault tolerance.
@@ -200,6 +200,7 @@ spec:
     metadata:
       labels:
         app: my-app
+        # disable-allow-same-namespace: "" # OPTIONAL. See further below for "NetworkPolicy opt-out"!
     spec:
       affinity: # optional!
         podAntiAffinity:
@@ -281,7 +282,7 @@ spec:
 
 A Route exposes your app for network traffic from outside the Openshift cluster.
 
-[Documentation on Routes.](https://docs.openshift.com/container-platform/4.6/networking/routes/route-configuration.html)
+[Documentation on Routes.](https://docs.redhat.com/en/documentation/openshift_container_platform/4.16/html/networking/configuring-routes#configuring-default-certificate)
 
 The Openshift clusters at the University of Helsinki are currently configured with two
 Ingress Controllers: `apps` for traffic within the university's network, and `ext` for the public Internet.
@@ -291,7 +292,7 @@ but then you must provide your own certificate and key in the Route.
 See above for documentation.
 
 Setting up a custom hostname for your OpenShift project is outside the scope of this document.
-See [here](https://devops.pages.helsinki.fi/guides/tike-container-platform/instructions/how-to-publish.html).
+See [here](https://wiki.helsinki.fi/xwiki/bin/view/SO/Platforms/Container%20Platform/Instructions/Accessing%20your%20application/#HCustomhostnames).
 
 ```Yaml
 kind: Route
@@ -314,3 +315,53 @@ spec:
     insecureEdgeTerminationPolicy: Redirect
   wildcardPolicy: None
 ```
+
+## NetworkPolicy opt-out (optional)
+
+### Do I need to care?
+
+Due to the way ingress traffic is handled in University of Helsinki's container platform, 
+the httpd container does _things_ to set up the remote ip address to correctly correspond 
+to the actual client outside the cluster. 
+(see: [httpd/files/set_forwarded_remote_ip.conf](httpd/files/set_forwarded_remote_ip.conf)) 
+
+This setup does open the possibility of an attacker hiding their actual IP address 
+from httpd/shibd logs, _if they are able to connect from within the OpenShift cluster._ 
+Practically this requires the attacker to connect from within your own OpenShift project 
+(kubernetes namespace) or any project your project has explicitly stated to allow access 
+in the NetworkPolicies. When any OpenShift project gets deployed into University of Helsinki 
+container platform, we have set up default NetworkPolicy objects to deny access from any 
+other projects, aside from the `openshift-ingress` and `openshift-monitoring` projects which 
+are required to be allowed for the correct operation of the container platform. 
+And lastly, there is a NetworkPolicy object `allow-same-namespace` that makes it so that 
+pods in the same project can connect to each other, since this is typically the expected 
+behaviour.
+
+Essentially, this means the attacker has to access your httpd from within the same project. 
+If we leave out the possibility of an attacker having credentials to create their own pods 
+(in which case all hope is lost anyways), the attacker has had to have access through 
+one of your existing pods.
+
+### I still want to prevent that possibility!
+
+_**Due to the way NetworkPolicies stacking works, there is NO way to override allowing traffic into a pod, by making a new NetworkPolicy to disallow it.**_
+
+Also, while it is technically possible for project admins to edit or delete the networkpolicy objects, the CI/CD set up by cluster administration will overwrite all your changes promptly.
+
+The `allow-same-namespace` NetworkPolicy, however, has the following part in it:
+```Yaml
+...
+spec:
+  podSelector:
+    matchExpressions:
+    - key: disable-allow-same-namespace
+      operator: DoesNotExist
+...
+```
+
+And this means that any pod that includes the label `disable-allow-same-namespace=` (no key-value, just the string as the key) will be excluded from allowing inbound connections from other pods in your project. Do note though, if you then want more fine-grained control of a subset of your otherwise isolated pods to be able to talk to each other, you need to write your own NetworkPolicies to do that. Note, disabling incoming traffic to a pod does not prevent the pod itself connecting to other pods. This is fortunate as it allows the Apache ProxyPass directive to work even if the backend service is outside the pod.
+
+Documentation: 
+* [Network Policies at kubernetes docs](https://kubernetes.io/docs/concepts/services-networking/network-policies/)
+* [Labels and Selectors at kubernetes docs](https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/)
+* [Network Policies at University of Helsinki container platform docs](https://wiki.helsinki.fi/xwiki/bin/view/SO/Platforms/Container%20Platform/Instructions/Accessing%20your%20application/#HNetworkPolicies)
