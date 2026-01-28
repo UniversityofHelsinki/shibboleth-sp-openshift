@@ -16,10 +16,16 @@ COPY shibboleth.repo /etc/yum.repos.d/
 # 4) Give the root group write permissions to directories which shibd needs to write in
 # 5) Delete some generated and not-to-be-used files in order to appease image scanners
 #    (and maybe force-prevent some misconfiguration problems too...)
-RUN microdnf \
+RUN microdnf clean all && \
+    microdnf \
             --disableplugin=subscription-manager --disablerepo="*" \
             --enablerepo="ubi-9-appstream-rpms" --enablerepo="ubi-9-baseos-rpms"  --enablerepo="shibboleth" \
         install -y shibboleth nmap-ncat findutils && \
+    microdnf clean all && \
+    microdnf \
+            --disableplugin=subscription-manager --disablerepo="*" \
+            --enablerepo="ubi-9-appstream-rpms" --enablerepo="ubi-9-baseos-rpms"  --enablerepo="shibboleth" \
+        upgrade -y && \
     microdnf clean all && \
     usermod -a -G root shibd && \
     rpm -ql shibboleth | xargs chgrp root && \
@@ -36,12 +42,6 @@ COPY base_shibboleth_configs/* /etc/shibboleth/
 COPY --chown=shibd:root start.sh /usr/local/bin/start.sh
 
 RUN chmod ug+rx /usr/local/bin/start.sh && chmod ug+r /etc/shibboleth/*
-
-RUN microdnf \
-            --disableplugin=subscription-manager --disablerepo="*" \
-            --enablerepo="ubi-9-appstream-rpms" --enablerepo="ubi-9-baseos-rpms"  --enablerepo="shibboleth" \
-        upgrade -y && \
-    microdnf clean all
 
 # This is just for best practices. Ignored by Openshift.
 USER shibd
