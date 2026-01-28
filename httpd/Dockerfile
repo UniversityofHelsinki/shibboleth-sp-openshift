@@ -52,10 +52,13 @@ RUN chgrp -R 0 /opt/src && \
     chmod -R g=u /opt/src && \
     chmod +x /opt/src/cmd.sh
 
+COPY files/protocols.xml /etc/shibboleth/protocols.xml
+COPY files/set_forwarded_remote_ip.conf /etc/httpd/conf.d/set_forwarded_remote_ip.conf
+
+RUN chmod ug+r /etc/shibboleth/protocols.xml /etc/httpd/conf.d/set_forwarded_remote_ip.conf
+
 USER 1001
 
 COPY modified_templates/*.html /etc/shibboleth/
-COPY files/protocols.xml /etc/shibboleth/protocols.xml
-COPY files/set_forwarded_remote_ip.conf /etc/httpd/conf.d/set_forwarded_remote_ip.conf
 
 ENTRYPOINT ["/opt/src/cmd.sh"]
