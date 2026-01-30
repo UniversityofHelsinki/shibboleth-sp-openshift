@@ -14,6 +14,8 @@ please read the [USING ATTRIBUTES](USING_ATTRIBUTES.md) document before doing an
 
 ## Secrets
 
+This is the place where you plug in the self-signed certificate you've created for SP-registry.
+
 **Make sure you do not include these in your version control,
 or if you do,
 protect them with something like Ansible Vault or [SealedSecrets](https://devops.pages.helsinki.fi/guides/tike-container-platform/instructions/secrets.html#sealedsecrets)**
@@ -278,21 +280,49 @@ spec:
     app: my-app
 ```
 
-## Route
-
-A Route exposes your app for network traffic from outside the Openshift cluster.
-
-[Documentation on Routes.](https://docs.redhat.com/en/documentation/openshift_container_platform/4.16/html/networking/configuring-routes#configuring-default-certificate)
+## Route or Ingress and the hostname of your service
 
 The Openshift clusters at the University of Helsinki are currently configured with two
-Ingress Controllers: `apps` for traffic within the university's network, and `ext` for the public Internet.
+Ingress Controllers: `apps` for traffic within the university's network, and `ext` for the 
+public Internet. These ingress controllers listen to their own IP addresses, and every connection
+towards your service from users or SAML SP comes through either of those, regardless of whether 
+you have your own hostname or not. For details about how that works, see [here](https://wiki.helsinki.fi/xwiki/bin/view/SO/Platforms/Container%20Platform/Instructions/Accessing%20your%20application/How%20internet%20connects%20to%20pods%20in%20OpenShift/).
 
-You can also use a custom name for the `spec.host` value,
-but then you must provide your own certificate and key in the Route.
-See above for documentation.
+If (when, really) you want your user-facing service using SSO to have an actual hostname 
+instead of a montrosity of the form `my-route-name.(apps|ext).cluster-name.k8s.it.helsinki.fi`, you need 
+to have two things:
+* Your custom hostname set up as CNAME for the correct ingress controller hostname AND
+* A valid and signed (with publically trusted CA) TLS certificate, preferably set up with an ACME 
+provider, and the corresponding private key. **This is NOT the self-signed certificate you put into 
+SP-registry!**
 
 Setting up a custom hostname for your OpenShift project is outside the scope of this document.
 See [here](https://wiki.helsinki.fi/xwiki/bin/view/SO/Platforms/Container%20Platform/Instructions/Accessing%20your%20application/#HCustomhostnames).
+
+Certificates for your custom hostname are also outside the scope of this document. See [here](https://wiki.helsinki.fi/xwiki/bin/view/SO/Platforms/Container%20Platform/Instructions/Accessing%20your%20application/Certificates%20in%20Containers/). This also includes 
+setting up the Issuer object for ACME through Let's encrypt.
+
+If the service needs to be restricted to within University network (meaning the https01 
+challenge used by Let's encrypt is not viable solution), reach out to cluster administration
+for help setting up DNS01 challenge or alternative ACME provider with EAB/HMAC keys.
+
+### Route
+
+NOTE: You probably want to use Ingress object instead of Route. Skip further below for 
+how to use Ingress.
+
+A Route exposes your app for network traffic from outside the Openshift cluster.
+
+You can use a custom name for the `spec.host` value, and if you're using SSO, this 
+is likely what you need and want anyway. Since this is the hostname the SAML SP expects to 
+talk towards. The problematic part with using Route object directly is that you would then 
+need to **inline the certificate with its chain and also its private key in plain-text 
+PEM format within the Route yaml object** which then makes it hard to include the rest 
+of the Route specification into version control. Putting a plain-text private key into 
+your version control is obviously not a solution.
+
+[Documentation on Routes.](https://docs.redhat.com/en/documentation/openshift_container_platform/4.16/html/networking/configuring-routes#configuring-default-certificate)
+
 
 ```Yaml
 kind: Route
@@ -304,7 +334,8 @@ metadata:
     app: my-app
     type: external # only if you use the "ext" Ingress
 spec:
-  host: "my-route-name.(apps|ext).cluster-name.k8s.it.helsinki.fi"
+  host: "my-route-name.(apps|ext).cluster-name.k8s.it.helsinki.fi" # This is the part you replace with your actual hostname when you have that.
+  # Note that then the 'tls' part below also needs to be changed to have the certificate data inlined and set up with other values 
   to:
     kind: Service
     name: my-app
@@ -315,6 +346,54 @@ spec:
     insecureEdgeTerminationPolicy: Redirect
   wildcardPolicy: None
 ```
+
+### Ingress
+
+Using an ingress object instead of Route yields two strong benefits:
+* You don't need to inline the certificate data, instead you can put it into a Secret object 
+which then can be stored securely in separate fashion from the rest of the information 
+about the routing (hostname, which ingress controller it binds to, what service and port 
+the traffic goes towards, all the optional haproxy annotations, etc...). In actuality 
+the certifate secret should likely not be stored outside of cluster at all, since:
+* The Ingress object integrates nicely with cert-manager running in the cluster 
+so the only thing needed besides Ingress object is the Issuer object 
+(and related configurations elsewhere + acme-dns secret if using DNS01 challenge) 
+and the cert-manager operator handles setting the certificate secret up for you.
+
+[Documentation on Ingress](https://docs.redhat.com/en/documentation/openshift_container_platform/4.18/html/networking_overview/understanding-networking#nw-understanding-networking-routes-ingress-example-ingress_understanding-networking)
+
+How the Ingress object works is that it'll generate a child object of type Route which will then 
+exist automatically, including the inline certificate data and you don't need to include that in your version control as it will get regenerated as needed by the Ingress object.
+
+```Yaml
+kind: Ingress
+apiVersion: networking.k8s.io/v1
+metadata:
+  name: my-app
+  namespace: my-project
+  annotations:
+    cert-manager.io/issuer: letsencrypt # Name of the Issuer object
+  labels:
+    type: external # If your service needs to be accessed from outside University network.
+spec:
+  ingressClassName: openshift-default
+  tls:
+    - hosts:
+        -  "my-route-name.(apps|ext).cluster-name.k8s.it.helsinki.fi" # This is the part you replace with your actual hostname when you have that.
+      secretName: tls-secret-of-your-public-hostname-certificate 
+  rules:
+    - host: "my-route-name.(apps|ext).cluster-name.k8s.it.helsinki.fi" # This is the part you replace with your actual hostname when you have that.
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: my-app # The target service in front of the httpd-shibd pods
+                port:
+                  number: 8080 # This is the port httpd is actually listening on with the default configuration in our image
+```
+
 
 ## NetworkPolicy opt-out (optional)
 
