@@ -1,6 +1,6 @@
 FROM registry.access.redhat.com/ubi9/ubi-minimal
 
-LABEL maintainer="atk-verkkopalvelut@helsinki.fi"
+LABEL maintainer="grp-openshift-admin@helsinki.fi"
 LABEL ImageName=ubi9-httpd
 
 RUN microdnf \
