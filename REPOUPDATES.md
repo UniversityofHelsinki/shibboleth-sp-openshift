@@ -18,8 +18,9 @@ All of the following:
 * Valid login to quay.io, with write access to both of following repos:
     * quay.io/tike/openshift-sp-httpd
     * quay.io/tike/openshift-sp-shibd
-* Access and working test login credentials for following service hostnames (these need University of Helsinki VPN or internal network access):
-    * https://shidb-poc-test.it.helsinki.fi
+* Access and working test login credentials for following service hostnames 
+  (these need University of Helsinki VPN or internal network access):
+    * https://shibd-poc-test.it.helsinki.fi
     * https://shibd-poc.it.helsinki.fi
 * Valid login for University of Helsinki openshift clusters (test and prod) 
 that has admin access to shibd-poc project.
