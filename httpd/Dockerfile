@@ -23,10 +23,10 @@ RUN usermod -u 1001 apache && \
     groupmod -g 1001 apache && \
     groupmod -o -g 0 apache
 
-ADD files/httpd.conf /etc/httpd/conf/httpd.conf
-ADD files/ssl.conf /etc/httpd/conf.d/ssl.conf
-ADD files/welcome.conf /etc/httpd/conf.d/welcome.conf
-ADD files/index.html /var/www/html/index.html
+ADD httpd-files/httpd.conf /etc/httpd/conf/httpd.conf
+ADD httpd-files/ssl.conf /etc/httpd/conf.d/ssl.conf
+ADD httpd-files/welcome.conf /etc/httpd/conf.d/welcome.conf
+ADD httpd-files/index.html /var/www/html/index.html
 
 # Change the permissions of the '/var/run/httpd' directory so that 
 # the 'apache' user can write to it
