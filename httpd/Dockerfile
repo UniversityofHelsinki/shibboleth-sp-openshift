@@ -108,9 +108,6 @@ COPY files/set_forwarded_remote_ip.conf /etc/httpd/conf.d/set_forwarded_remote_i
 
 RUN chmod ug+r /etc/shibboleth/protocols.xml /etc/httpd/conf.d/set_forwarded_remote_ip.conf
 
-# Disable http2 due to https://access.redhat.com/security/cve/cve-2026-119618
-RUN rm /etc/httpd/conf.modules.d/10-h2.conf /etc/httpd/conf.modules.d/10-proxy_h2.conf
-
 USER 1001
 
 COPY modified_templates/*.html /etc/shibboleth/
