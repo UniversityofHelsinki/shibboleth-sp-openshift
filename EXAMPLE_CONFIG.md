@@ -2,6 +2,14 @@
 
 These are example objects for running this service in an Openshift project.
 
+## Note about http/2
+
+Due to security reasons, we don't really support http/2 protocol. http/1.1 works 
+fine for the uses these images are intended for. 
+
+Discuss with us at grp-openshift-owner@helsinki.fi if you think you really need 
+to have http/1.1.
+
 ## User attributes
 
 **This minimal example config deliberately omits handling any user attributes.**
