@@ -64,7 +64,7 @@ The container image `quay.io/tike/shibboleth-sp-httpd` comes with these relevant
 * mod_proxy_ajp.so
 * mod_proxy_fcgi.so
 * mod_proxy_http.so
-* mod_proxy_http2.so
+* mod_proxy_http2.so (not loaded by default)
 * mod_proxy_scgi.so
 * mod_proxy_uwsgi.so
 * mod_proxy_wstunnel.so
